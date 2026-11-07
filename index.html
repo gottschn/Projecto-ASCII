@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generador de ASCII Art</title>
+  <style>
+    :root {
+      --fondo: #0f1115;
+      --panel: #181b22;
+      --borde: #2a2f3a;
+      --texto: #e6e8ee;
+      --suave: #9aa1b2;
+      --acento: #4fd1c5;
+      --error: #f87171;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--fondo);
+      color: var(--texto);
+      font-family: system-ui, sans-serif;
+    }
+    main { max-width: 1100px; margin: 0 auto; padding: 32px 16px; text-align: center; }
+    h1 { margin: 0 0 4px; font-family: monospace; color: var(--acento); }
+    .subtitulo { margin: 0 0 24px; color: var(--suave); }
+    .subir {
+      display: inline-block;
+      padding: 14px 28px;
+      background: var(--acento);
+      color: #0f1115;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .subir:hover { filter: brightness(1.1); }
+    .subir input { display: none; }
+    .error {
+      margin: 16px auto 0;
+      max-width: 480px;
+      padding: 12px 16px;
+      border: 1px solid var(--error);
+      border-radius: 8px;
+      color: var(--error);
+    }
+    .resultado { margin-top: 24px; text-align: left; }
+    .acciones { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+    .acciones button {
+      font: inherit;
+      padding: 8px 14px;
+      color: var(--texto);
+      background: var(--panel);
+      border: 1px solid var(--borde);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    pre {
+      margin: 0;
+      padding: 16px;
+      overflow-x: auto;
+      background: #000;
+      border: 1px solid var(--borde);
+      border-radius: 12px;
+      font-family: "Courier New", monospace;
+      font-size: 7px;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Generador de ASCII Art</h1>
+  <p class="subtitulo">Subí una imagen y convertila en texto.</p>
+
+  <form method="post" enctype="multipart/form-data">
+    <label class="subir">
+      Elegir imagen
+      <!-- Al elegir el archivo, el formulario se envía solo -->
+      <input type="file" name="imagen" accept="image/*" onchange="this.form.submit()">
+    </label>
+  </form>
+
+  {% if error %}
+    <div class="error">✘ {{ error }}</div>
+  {% endif %}
+
+  {% if resultado %}
+    <section class="resultado">
+      <div class="acciones">
+        <button type="button" id="descargar">Descargar .txt</button>
+      </div>
+      <pre>{{ resultado }}</pre>
+    </section>
+    <script>
+      // El texto plano viaja como JSON para que no se rompan caracteres especiales
+      const texto = {{ texto | tojson }};
+      const nombre = {{ nombre | tojson }};
+      document.getElementById("descargar").addEventListener("click", () => {
+        const archivo = new Blob([texto], { type: "text/plain;charset=utf-8" });
+        const enlace = document.createElement("a");
+        enlace.href = URL.createObjectURL(archivo);
+        enlace.download = nombre;
+        enlace.click();
+        URL.revokeObjectURL(enlace.href);
+      });
+    </script>
+  {% endif %}
+</main>
+</body>
+</html>
