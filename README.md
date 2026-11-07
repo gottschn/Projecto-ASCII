@@ -66,6 +66,7 @@ para que no salga estirada.
 
 ## Integrantes
 
-- Nombre Apellido
-- Nombre Apellido
-- Nombre Apellido
+- Esteban Gotfrid Marino Scheuschner
+- Mario Alejandro Agüero Turbati
+- Franco Luciano Mignogna
+- Javier Pablo Gonzalez
